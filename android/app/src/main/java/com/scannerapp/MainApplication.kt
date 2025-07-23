@@ -1,4 +1,4 @@
-package com.scannerapp
+package com.buddyforevent
 
 import android.app.Application
 import com.facebook.react.PackageList
