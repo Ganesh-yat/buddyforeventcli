@@ -18,7 +18,7 @@ import {
   giveGift,
   logExit,
   validateEntry,
-} from '../../utils/Services/api';
+} from '../../lib/Services/api';
 import { Camera } from 'react-native-vision-camera';
 
 

@@ -1,4 +1,4 @@
-// import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import React, { useState } from "react";
 import {
     ActivityIndicator,
@@ -16,7 +16,7 @@ import { useGlobalInfo } from "../../context/GlobalContext";
 
 const LoginScreen: React.FC = ({ handleLoginScreen }: any) => {
     const { colors, changeIsLoggedIn, changeUserType, changeUserId } = useGlobalInfo();
-    // const navigation = useNavigation();
+    const navigation = useNavigation();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -78,11 +78,12 @@ const LoginScreen: React.FC = ({ handleLoginScreen }: any) => {
             });
 
             const data = await response.json();
-
             if (response.ok) {
                 const userTypeFromApi = data?.data?.existingUser?.user_type;
-
+                
                 if (userTypeFromApi) {
+                    console.log(data,"login-api-resp");
+                    
                     changeUserType(userTypeFromApi);
                     changeIsLoggedIn(true);
                     changeUserId(data?.data?.existingUser?._id);
@@ -111,7 +112,7 @@ const LoginScreen: React.FC = ({ handleLoginScreen }: any) => {
                     source={require('../../assets/images/logo-company.png')}
                     style={styles.logo}
                 />
-                <Text style={[styles.title, { color: colors.text }]}>Buddyforevent</Text>
+                <Text style={[styles.title, { color: colors.text }]}>Buddy For Events</Text>
             </View>
 
             <TextInput
@@ -157,7 +158,7 @@ const LoginScreen: React.FC = ({ handleLoginScreen }: any) => {
             {errors.password && <Text style={styles.error}>{errors.password}</Text>}
 
             <TouchableOpacity
-                // onPress={() => navigation.navigate('ForgotPassword' as never)}
+                onPress={() => navigation.navigate('ForgotPassword' as never)}
                 style={styles.forgotPasswordContainer}
                 disabled={loading}
             >

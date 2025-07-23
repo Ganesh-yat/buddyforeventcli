@@ -76,9 +76,9 @@ android {
     ndkVersion rootProject.ext.ndkVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.scannerapp"
+    namespace "com.buddyforevent"
     defaultConfig {
-        applicationId "com.scannerapp"
+        applicationId "com.buddyforevent"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         buildConfigField "Boolean", "VisionCamera_enableFrameProcessors", "true"
@@ -107,6 +107,9 @@ android {
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }
+    project.ext.react = [
+        enableHermes: true
+    ]
 }
 
 dependencies {

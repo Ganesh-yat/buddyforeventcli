@@ -12,11 +12,13 @@ type GlobalContextType = {
     // Theme
     theme: ThemeType;
     colors: typeof Colors["light"];
+    event: string | null,
     // State setters
     changeIsLoggedIn: (v: boolean) => void;
     changeUserId: (id: string | null) => void;
     changeUserType: (type: string | null) => void;
     changeTheme: (theme: ThemeType) => void;
+    changeEvent: (event: string) => void
 };
 
 const defaultContext: GlobalContextType = {
@@ -25,16 +27,18 @@ const defaultContext: GlobalContextType = {
     userType: null,
     theme: "light",
     colors: Colors.light,
+    event: "",
     changeIsLoggedIn: () => { },
     changeUserId: () => { },
     changeUserType: () => { },
     changeTheme: () => { },
+    changeEvent: () => { },
 };
 
 const GlobalContext = createContext<GlobalContextType>(defaultContext);
 
 export const GlobalProvider = ({ children }: { children: ReactNode }) => {
-    
+
     const systemTheme = useColorScheme() as ThemeType || "light";
     const [theme, setTheme] = useState<ThemeType>(systemTheme);
 
@@ -46,12 +50,14 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userId, setUserId] = useState<string | null>(null);
     const [userType, setUserType] = useState<string | null>(null);
+    const [event, setEvent] = useState<string | null>("");
 
     // Setters
     const changeIsLoggedIn = (v: boolean) => setIsLoggedIn(v);
     const changeUserId = (id: string | null) => setUserId(id);
     const changeUserType = (type: string | null) => setUserType(type);
     const changeTheme = (newTheme: ThemeType) => setTheme(newTheme);
+    const changeEvent = (newEventId: string) => setEvent(newEventId)
 
     const colors = Colors[theme];
 
@@ -63,10 +69,12 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
                 userType,
                 theme,
                 colors,
+                event,
                 changeIsLoggedIn,
                 changeUserId,
                 changeUserType,
                 changeTheme,
+                changeEvent,
             }}
         >
             {children}
