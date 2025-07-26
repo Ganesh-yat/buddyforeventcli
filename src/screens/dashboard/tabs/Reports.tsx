@@ -15,7 +15,100 @@ import RNFS from 'react-native-fs';
 import Share from 'react-native-share';
 import { Colors } from '../../../constants/Colors';
 import { useGlobalInfo } from '../../../context/GlobalContext';
-import { API_ROUTE } from '../../../lib/config';
+import { API_ROUTE } from '../../../../config';
+
+const submissionsData = [
+    {
+        _id: "s1",
+        responses: [
+            { fieldId: "name", value: "John Doe" },
+            { fieldId: "email", value: "john@example.com" },
+            { fieldId: "company", value: "Acme Corp" },
+            { fieldId: "phone", value: "1234567890" }
+        ],
+        visitorCount: 4,
+        entryTime: "2024-07-25T09:00:00.000Z",
+        exitTime: "2024-07-25T17:00:00.000Z",
+        food: true,
+        foodTime: ["2024-07-25T12:30:00.000Z"],
+        gift: false,
+        giftTime: [],
+        submittedAt: "2024-07-24T20:15:00.000Z"
+    },
+    {
+        _id: "s2",
+        responses: [
+            { fieldId: "name", value: "Jane Smith" },
+            { fieldId: "email", value: "jane@company.com" },
+            { fieldId: "company", value: "Widgets Ltd" },
+            { fieldId: "phone", value: "9876543210" }
+        ],
+        visitorCount: 3,
+        entryTime: "2024-07-25T09:10:00.000Z",
+        exitTime: "2024-07-25T16:45:00.000Z",
+        food: false,
+        foodTime: [],
+        gift: true,
+        giftTime: ["2024-07-25T14:45:00.000Z"],
+        submittedAt: "2024-07-24T21:05:00.000Z"
+    },
+    {
+        _id: "s3",
+        responses: [
+            { fieldId: "name", value: "Carlos Alvarez" },
+            { fieldId: "email", value: "carlos@web.com" },
+            { fieldId: "company", value: "Beta Inc" },
+            { fieldId: "phone", value: "5556783245" }
+        ],
+        visitorCount: 5,
+        entryTime: "2024-07-25T09:20:00.000Z",
+        exitTime: "2024-07-25T15:20:00.000Z",
+        food: true,
+        foodTime: ["2024-07-25T13:00:00.000Z", "2024-07-25T16:00:00.000Z"],
+        gift: true,
+        giftTime: ["2024-07-25T15:55:00.000Z"],
+        submittedAt: "2024-07-24T22:10:00.000Z"
+    },
+    {
+        _id: "s4",
+        responses: [
+            { fieldId: "name", value: "Priya Singh" },
+            { fieldId: "email", value: "priya@india.com" },
+            { fieldId: "company", value: "TechSoft" },
+            { fieldId: "phone", value: "8899887766" }
+        ],
+        visitorCount: 2,
+        entryTime: "2024-07-25T10:00:00.000Z",
+        exitTime: "2024-07-25T14:00:00.000Z",
+        food: false,
+        foodTime: [],
+        gift: false,
+        giftTime: [],
+        submittedAt: "2024-07-24T22:50:00.000Z"
+    }
+];
+
+const summaryData = {
+    metrics: {
+        "Total Submissions": 4,
+        "Unique Attendees": 4,
+        "Total Visitors": 14,
+        "With Food": 2,
+        "With Gift": 3,
+    },
+    ticketTiers: [
+        { name: "Regular", price: 200, capacity: 30, perks: ["Swag", "Lunch"] },
+        { name: "VIP", price: 500, capacity: 10, perks: ["VIP Seating", "Gift Bag", "Buffet"] }
+    ],
+    formSchema: [
+        { id: "name", label: "Name" },
+        { id: "email", label: "Email" },
+        { id: "company", label: "Company" },
+        { id: "phone", label: "Phone" }
+    ]
+};
+
+
 
 export default function Reports() {
     const { theme, event } = useGlobalInfo();
@@ -57,8 +150,10 @@ export default function Reports() {
 
         Promise.all([sumP, subsP, ticketsP])
             .then(([sum, subs, tickets]) => {
-                setSummary(sum);
-                setSubmissions(subs);
+                // setSummary(sum);
+                // setSubmissions(subs);
+                setSummary(summaryData);
+                setSubmissions(submissionsData);
                 const m = {};
                 tickets.forEach(t => {
                     m[t.userSubmissionId] = t.tierName.toUpperCase();
@@ -279,55 +374,59 @@ export default function Reports() {
                     )}
 
                     {/* Submissions Table */}
-                    <View style={{ marginBottom: 24, maxHeight: 350 }}>
-                        {/* Table Header (sticky, not scrolling vertically) */}
-                        <View style={[styles.tableRow, styles.tableHeaderRow, { backgroundColor: colors.dropdownBackground }]}>
-                            <Text style={[styles.tableCell, styles.headerCell, { color: colors.text }]}>TIER</Text>
-                            {summary?.formSchema.map(f => (
-                                <Text key={f.id} style={[styles.tableCell, styles.headerCell, { color: colors.text }]}>
-                                    {f.label.toUpperCase()}
-                                </Text>
-                            ))}
-                            <Text style={[styles.tableCell, styles.headerCell, { color: colors.text }]}>VISITORS</Text>
-                            <Text style={[styles.tableCell, styles.headerCell, { color: colors.text }]}>ENTRY TIMES</Text>
-                            <Text style={[styles.tableCell, styles.headerCell, { color: colors.text }]}>EXIT TIMES</Text>
-                            <Text style={[styles.tableCell, styles.headerCell, { color: colors.text }]}>FOOD</Text>
-                            <Text style={[styles.tableCell, styles.headerCell, { color: colors.text }]}>FOOD TIMES</Text>
-                            <Text style={[styles.tableCell, styles.headerCell, { color: colors.text }]}>GIFT</Text>
-                            <Text style={[styles.tableCell, styles.headerCell, { color: colors.text }]}>GIFT TIMES</Text>
-                            <Text style={[styles.tableCell, styles.headerCell, { color: colors.text }]}>SUBMITTED AT</Text>
-                        </View>
+                    <View style={{ marginBottom: 24, height: 320 }}>
+                        <ScrollView horizontal showsHorizontalScrollIndicator>
+                            <View>
+                                {/* Table Header */}
+                                <View style={[styles.tableRow, styles.tableHeaderRow, { backgroundColor: colors.dropdownBackground, minWidth: Math.max(900, (summary?.formSchema.length || 0) * 110 + 600) }]}>
+                                    <Text style={[styles.tableCell, styles.headerCell, { color: colors.text }]}>TIER</Text>
+                                    {summary?.formSchema.map(f => (
+                                        <Text key={f.id} style={[styles.tableCell, styles.headerCell, { color: colors.text }]}>
+                                            {f.label.toUpperCase()}
+                                        </Text>
+                                    ))}
+                                    <Text style={[styles.tableCell, styles.headerCell, { color: colors.text }]}>VISITORS</Text>
+                                    <Text style={[styles.tableCell, styles.headerCell, { color: colors.text }]}>ENTRY TIMES</Text>
+                                    <Text style={[styles.tableCell, styles.headerCell, { color: colors.text }]}>EXIT TIMES</Text>
+                                    <Text style={[styles.tableCell, styles.headerCell, { color: colors.text }]}>FOOD</Text>
+                                    <Text style={[styles.tableCell, styles.headerCell, { color: colors.text }]}>FOOD TIMES</Text>
+                                    <Text style={[styles.tableCell, styles.headerCell, { color: colors.text }]}>GIFT</Text>
+                                    <Text style={[styles.tableCell, styles.headerCell, { color: colors.text }]}>GIFT TIMES</Text>
+                                    <Text style={[styles.tableCell, styles.headerCell, { color: colors.text }]}>SUBMITTED AT</Text>
+                                </View>
 
-                        {/* Table Body: scrollable vertically only */}
-                        <ScrollView style={{ maxHeight: 300 }}>
-                            {submissions.map(sub => (
-                                <View key={sub._id} style={styles.tableRow}>
-                                    <Text style={[styles.tableCell, { color: colors.text }]}>{ticketMap[sub._id] || '—'}</Text>
-                                    {summary.formSchema.map(fld => {
-                                        const resp = sub.responses.find(r => r.fieldId === fld.id);
-                                        return (
-                                            <Text key={fld.id} style={[styles.tableCell, { color: colors.text }]}>
-                                                {renderCell(resp?.value)}
+                                {/* Table Body: scrollable vertically */}
+                                <ScrollView style={{ height: 260 }}>
+                                    {submissions.map(sub => (
+                                        <View key={sub._id} style={[styles.tableRow, { minWidth: Math.max(900, (summary?.formSchema.length || 0) * 110 + 600) }]}>
+                                            <Text style={[styles.tableCell, { color: colors.text }]}>{ticketMap[sub._id] || '—'}</Text>
+                                            {summary.formSchema.map(fld => {
+                                                const resp = sub.responses.find(r => r.fieldId === fld.id);
+                                                return (
+                                                    <Text key={fld.id} style={[styles.tableCell, { color: colors.text }]}>
+                                                        {renderCell(resp?.value)}
+                                                    </Text>
+                                                );
+                                            })}
+                                            <Text style={[styles.tableCell, { color: colors.text }]}>{displayVal(sub.visitorCount)}</Text>
+                                            <Text style={[styles.tableCell, { color: colors.secondaryText }]}>{renderCell(sub.entryTime)}</Text>
+                                            <Text style={[styles.tableCell, { color: colors.secondaryText }]}>{renderCell(sub.exitTime)}</Text>
+                                            <Text style={[styles.tableCell, { color: colors.button }]}>{displayVal(sub.food)}</Text>
+                                            <Text style={[styles.tableCell, { color: colors.secondaryText }]}>{renderCell(sub.foodTime)}</Text>
+                                            <Text style={[styles.tableCell, { color: colors.button }]}>{displayVal(sub.gift)}</Text>
+                                            <Text style={[styles.tableCell, { color: colors.secondaryText }]}>{renderCell(sub.giftTime)}</Text>
+                                            <Text style={[styles.tableCell, { color: colors.text }]}>{displayVal(sub.submittedAt)}</Text>
+                                        </View>
+                                    ))}
+                                    {!loading && submissions.length === 0 && (
+                                        <View style={styles.tableRow}>
+                                            <Text style={[styles.tableCell, { color: colors.cancelButton, textAlign: 'center', flex: 1 }]}>
+                                                NO SUBMISSIONS
                                             </Text>
-                                        );
-                                    })}
-                                    <Text style={[styles.tableCell, { color: colors.text }]}>{displayVal(sub.visitorCount)}</Text>
-                                    <Text style={[styles.tableCell, { color: colors.secondaryText }]}>{renderCell(sub.entryTime)}</Text>
-                                    <Text style={[styles.tableCell, { color: colors.secondaryText }]}>{renderCell(sub.exitTime)}</Text>
-                                    <Text style={[styles.tableCell, { color: colors.button }]}>{displayVal(sub.food)}</Text>
-                                    <Text style={[styles.tableCell, { color: colors.secondaryText }]}>{renderCell(sub.foodTime)}</Text>
-                                    <Text style={[styles.tableCell, { color: colors.button }]}>{displayVal(sub.gift)}</Text>
-                                    <Text style={[styles.tableCell, { color: colors.secondaryText }]}>{renderCell(sub.giftTime)}</Text>
-                                    <Text style={[styles.tableCell, { color: colors.text }]}>{displayVal(sub.submittedAt)}</Text>
-                                </View>
-                            ))}
-                            {!loading && submissions.length === 0 && (
-                                <View style={styles.tableRow}>
-                                    <Text style={[styles.tableCell, { color: colors.cancelButton, textAlign: 'center', flex: 1 }]}>
-                                        NO SUBMISSIONS
-                                    </Text>
-                                </View>
-                            )}
+                                        </View>
+                                    )}
+                                </ScrollView>
+                            </View>
                         </ScrollView>
                     </View>
                 </View>
@@ -350,7 +449,7 @@ export default function Reports() {
 
 const styles = StyleSheet.create({
     container: {
-        minHeight: 740,
+        flex: 1,
         paddingVertical: 20,
     },
     title: {

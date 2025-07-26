@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View, FlatList, Pressable, Animated, Dimensions } from 'react-native';
 import { Colors } from '../../../constants/Colors';
 import { useGlobalInfo } from '../../../context/GlobalContext';
-import { API_ROUTE } from '../../../lib/config';
+import { API_ROUTE } from '../../../../config';
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
@@ -58,9 +58,11 @@ export default function Polls() {
         fetch(`${API_ROUTE}/api/v1/event/poll/event/${eventId}`)
             .then(res => res.json())
             .then(json => {
+                console.log(json, "poollllll")
                 if (!json.success) throw new Error(json.message || 'Failed to load polls');
                 if (isMounted) {
                     setPolls(json.data);
+
                     if (json.data.length > 0) {
                         const first = json.data[0];
                         setSelectedPollId(first._id);

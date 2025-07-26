@@ -39,23 +39,27 @@ import { Colors } from "../../constants/Colors";
 import { useGlobalInfo } from "../../context/GlobalContext";
 import { API_ROUTE } from "../../../config";
 import { uploadToCloudinary } from "../../lib/utils/cloudinary";
-
+import { formatDate, formatTime } from "../../lib/utils/formatter";
+import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+import type { MainAppStackParamList } from "../../navigation/MainAppNavigator";
 // --- Helper functions, similar as before ---
-function formatDate(input) {
-    if (!input) return "";
-    const date = typeof input === "string" ? new Date(input) : input;
-    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(
-        date.getDate()
-    ).padStart(2, "0")}`;
-}
+// function formatDate(input) {
+//     if (!input) return "";
+//     const date = typeof input === "string" ? new Date(input) : input;
+//     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(
+//         date.getDate()
+//     ).padStart(2, "0")}`;
+// }
 
-function formatTime(date) {
-    if (!date) return "";
-    return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
-}
+// function formatTime(date) {
+//     if (!date) return "";
+//     return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+// }
 
-export default function CreateEvent() {
-    const { theme, userId, event } = useGlobalInfo();
+type Props = NativeStackScreenProps<MainAppStackParamList, "CreateEvent">;
+
+export default function CreateEvent({ route }: Props) {
+    const { theme, userId, event = route } = useGlobalInfo();
     const colors = Colors[theme];
     const navigation = useNavigation();
 
@@ -218,7 +222,7 @@ export default function CreateEvent() {
                 if (response.didCancel || !response.assets) return;
                 const selectedImages = multiple ? response.assets : [response.assets[0]];
                 if (key === "event_images") {
-                    setFormData((prev) => ({
+                    setFormData((prev: any) => ({
                         ...prev,
                         event_images: [...prev.event_images, ...selectedImages],
                     }));

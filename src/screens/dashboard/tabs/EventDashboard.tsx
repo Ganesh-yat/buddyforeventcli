@@ -17,6 +17,8 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from "../../../constants/Colors";
 import { useGlobalInfo } from '../../../context/GlobalContext';
 import { API_ROUTE } from '../../../../config';
+import {formatDate} from "../../../lib/utils/formatter"
+import { useNavigation } from '@react-navigation/native';
 
 const { width } = Dimensions.get('window');
 const MAX_EVENT_NAME_WIDTH = width - 130;
@@ -30,6 +32,7 @@ interface UrlItem {
 export default function EventDashboard({ eventId }) {
 
     const context = useGlobalInfo();
+    const navigation = useNavigation();
     const { theme } = context;
     const colors = Colors[theme];
 
@@ -58,14 +61,14 @@ export default function EventDashboard({ eventId }) {
         { label: "Live Poll", path: `event/${id}/polls` },
     ];
 
-    function formatDate(isoDate: string): string {
-        if (!isoDate) return "";
-        const d = new Date(isoDate);
-        const year = d.getFullYear();
-        const month = (d.getMonth() + 1).toString().padStart(2, "0");
-        const day = d.getDate().toString().padStart(2, "0");
-        return `${year}-${month}-${day}`;
-    }
+    // function formatDate(isoDate: string): string {
+    //     if (!isoDate) return "";
+    //     const d = new Date(isoDate);
+    //     const year = d.getFullYear();
+    //     const month = (d.getMonth() + 1).toString().padStart(2, "0");
+    //     const day = d.getDate().toString().padStart(2, "0");
+    //     return `${year}-${month}-${day}`;
+    // }
 
     function getFullUrl(API_FRONTEND: string, path: string) {
         return `${API_FRONTEND}/${path}`;
@@ -451,7 +454,8 @@ export default function EventDashboard({ eventId }) {
 
 const styles = StyleSheet.create({
     container: {
-        minHeight: 700,
+        // minHeight: 700,
+        flex: 1,
         padding: 16,
         paddingVertical: 20,
     },

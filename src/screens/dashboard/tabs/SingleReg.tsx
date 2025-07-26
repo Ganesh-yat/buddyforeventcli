@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { useNavigation } from '@react-navigation/native';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+// import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { Colors } from '../../../constants/Colors';
 import { useGlobalInfo } from '../../../context/GlobalContext';
 import { API_ROUTE } from '../../../lib/config';
