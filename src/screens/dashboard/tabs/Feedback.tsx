@@ -25,6 +25,52 @@ import { API_ROUTE } from '../../../../config';
 
 const ROWS_PER_PAGE_OPTIONS = [5, 10, 25];
 
+
+const sampleFeedbacks = [
+    {
+        _id: '1',
+        user: { name: 'John Doe' },
+        rating: 5,
+        comment: 'Great event! Learned a lot.',
+        createdAt: '2024-07-18T11:22:00.000Z'
+    },
+    {
+        _id: '2',
+        user: { name: 'Jane Smith' },
+        rating: 4,
+        comment: 'Very good. Could be a bit longer.',
+        createdAt: '2024-07-17T10:15:00.000Z'
+    },
+    {
+        _id: '3',
+        user: { name: 'Sam Brown' },
+        rating: 2,
+        comment: 'Content was too basic for me.',
+        createdAt: '2024-07-16T08:45:00.000Z'
+    },
+    {
+        _id: '4',
+        user: { name: 'Alex Johnson' },
+        rating: 3,
+        comment: 'Average, but well organized.',
+        createdAt: '2024-07-15T18:23:00.000Z'
+    },
+    {
+        _id: '5',
+        user: { name: 'Maria Garcia' },
+        rating: 5,
+        comment: 'Loved the networking session!',
+        createdAt: '2024-07-14T09:03:00.000Z'
+    },
+    {
+        _id: '6',
+        user: { name: 'Emily Wang' },
+        rating: 1,
+        comment: 'Venue was too crowded.',
+        createdAt: '2024-07-14T12:55:00.000Z'
+    },
+];
+
 export default function FeedbackAdmin() {
     const { theme, event } = useGlobalInfo();
     const colors = Colors[theme];
@@ -42,6 +88,7 @@ export default function FeedbackAdmin() {
             if (!res.ok) throw new Error('Failed to fetch feedbacks');
             const { data } = await res.json();
             setFeedbacks(data || []);
+            // setFeedbacks(sampleFeedbacks);
         } catch (err) {
             setFeedbacks([]);
         } finally {
@@ -116,42 +163,34 @@ export default function FeedbackAdmin() {
                 )}
 
                 {/* Pagination */}
-                <View style={styles.paginationRow}>
-                    <TouchableOpacity onPress={handlePrev} disabled={page === 0}>
-                        <Text
-                            style={[
-                                styles.pageBtn,
-                                {
-                                    color: colors.buttonText,
-                                    backgroundColor: colors.button,
-                                    opacity: page === 0 ? 0.5 : 1
-                                }
-                            ]}
-                        >
-                            Prev
-                        </Text>
+                <View style={styles.pagination}>
+                    <TouchableOpacity
+                        onPress={handlePrev}
+                        disabled={page === 0}
+                    >
+                        <Text style={[
+                            styles.pageBtn,
+                            { color: colors.button, opacity: page === 0 ? 0.5 : 1 }
+                        ]}>Prev</Text>
                     </TouchableOpacity>
+
                     <Text style={[styles.pageLabel, { color: colors.text }]}>
                         Page {page + 1} of {Math.max(1, Math.ceil(feedbacks.length / rowsPerPage))}
                     </Text>
-                    <TouchableOpacity onPress={handleNext} disabled={startIdx + rowsPerPage >= feedbacks.length}>
-                        <Text
-                            style={[
-                                styles.pageBtn,
-                                {
-                                    color: colors.buttonText,
-                                    backgroundColor: colors.button,
-                                    opacity: startIdx + rowsPerPage >= feedbacks.length ? 0.5 : 1
-                                }
-                            ]}
-                        >
-                            Next
-                        </Text>
+
+                    <TouchableOpacity
+                        onPress={handleNext}
+                        disabled={startIdx + rowsPerPage >= feedbacks.length}
+                    >
+                        <Text style={[
+                            styles.pageBtn,
+                            { color: colors.button, opacity: startIdx + rowsPerPage >= feedbacks.length ? 0.5 : 1 }
+                        ]}>Next</Text>
                     </TouchableOpacity>
 
                     {/* Rows Per Page Selector */}
                     <View style={styles.rowsPerPageSelect}>
-                        <Text style={{ color: colors.secondaryText, marginRight: 8 }}>Rows per page:</Text>
+                        <Text style={{ color: colors.secondaryText, marginRight: 4 }}>Rows:</Text>
                         {ROWS_PER_PAGE_OPTIONS.map(opt => (
                             <TouchableOpacity
                                 key={opt}
@@ -159,17 +198,24 @@ export default function FeedbackAdmin() {
                                 style={[
                                     styles.rowsPerPageBtn,
                                     {
-                                        backgroundColor: rowsPerPage === opt ? colors.button : colors.dropdownBackground,
+                                        backgroundColor: rowsPerPage === opt ? colors.button : 'transparent',
+                                        borderWidth: 1,
+                                        borderColor: rowsPerPage === opt ? colors.button : colors.dropdownBackground,
+                                        marginLeft: 3
                                     }
                                 ]}
                             >
-                                <Text style={{ color: rowsPerPage === opt ? colors.buttonText : colors.text, fontWeight: rowsPerPage === opt ? 'bold' : 'normal' }}>
+                                <Text style={{
+                                    color: rowsPerPage === opt ? colors.buttonText : colors.text,
+                                    fontWeight: rowsPerPage === opt ? 'bold' : 'normal'
+                                }}>
                                     {opt}
                                 </Text>
                             </TouchableOpacity>
                         ))}
                     </View>
                 </View>
+
             </View>
         </View>
     );
@@ -241,33 +287,33 @@ const styles = StyleSheet.create({
         paddingTop: 12,
         marginTop: 8,
     },
+    pagination: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        marginTop: 16,
+        gap: 8,
+    },
     pageBtn: {
-        fontSize: 13,
-        fontWeight: 'bold',
-        paddingHorizontal: 14,
-        paddingVertical: 5,
-        borderRadius: 6,
-        overflow: 'hidden',
-        marginHorizontal: 4,
-        textAlign: 'center',
-        minWidth: 54,
+        fontSize: 14,
+        paddingHorizontal: 8,
+        paddingVertical: 4,
     },
     pageLabel: {
-        fontSize: 13,
-        marginHorizontal: 8,
-        minWidth: 60,
-        textAlign: 'center'
+        fontSize: 14,
+        fontWeight: '600',
+        minWidth: 70,
+        textAlign: 'center',
     },
     rowsPerPageSelect: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginLeft: 12,
-        gap: 2,
+        marginLeft: 14,
     },
     rowsPerPageBtn: {
         borderRadius: 5,
         paddingVertical: 4,
         paddingHorizontal: 10,
-        marginRight: 3,
     },
+
 });

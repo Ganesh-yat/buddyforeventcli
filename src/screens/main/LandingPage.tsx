@@ -159,6 +159,9 @@ const LandingPage = () => {
 };
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1
+    },
     cardContainer: {
         padding: 16,
         flexDirection: "row",
