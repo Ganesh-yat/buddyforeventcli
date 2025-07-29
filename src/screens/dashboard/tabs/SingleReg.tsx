@@ -17,7 +17,7 @@ import { useNavigation } from '@react-navigation/native';
 // import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { Colors } from '../../../constants/Colors';
 import { useGlobalInfo } from '../../../context/GlobalContext';
-import { API_ROUTE } from '../../../lib/config';
+import { API_ROUTE } from '../../../../config';
 
 export default function SingleParticipation() {
     const { event: eventId, theme } = useGlobalInfo();
@@ -214,22 +214,17 @@ export default function SingleParticipation() {
                         {/* Info row */}
                         <View style={styles.infoRow}>
                             <Text style={[styles.infoTitle, { color: colors.text }]}>Choose Your</Text>
-                            <View style={styles.infoRight}>
-                                <View style={styles.infoItem}>
-                                    {/* <MaterialIcons name="access-time" size={16} color={colors.secondaryText} /> */}
-                                    <Text style={[styles.infoText, { color: colors.secondaryText }]}>
-                                        08:00 PM - 08:00 PM
-                                    </Text>
-                                </View>
-                                <View style={styles.infoItem}>
-                                    {/* <MaterialIcons name="event-note" size={16} color={colors.cancelButton} /> */}
-                                    <Text style={[styles.infoText, { color: colors.cancelButton, fontWeight: 'bold' }]}>
-                                        {ticketTiers.length > 0
-                                            ? `${ticketTiers.reduce((acc, t) => acc + (t.capacity || 0), 0)} TICKET REMAINING`
-                                            : `TICKET REMAINING`}
-                                    </Text>
-                                </View>
-                            </View>
+                            <Text style={[styles.infoText, { color: colors.secondaryText, marginLeft: 8 }]}>
+                                08:00 PM - 08:00 PM
+                            </Text>
+                        </View>
+                        <View style={styles.infoItem}>
+                            {/* <MaterialIcons name="event-note" size={16} color={colors.cancelButton} /> */}
+                            <Text style={[styles.infoText, { color: colors.cancelButton, fontWeight: 'bold', marginLeft: 0 }]}>
+                                {ticketTiers.length > 0
+                                    ? `${ticketTiers.reduce((acc, t) => acc + (t.capacity || 0), 0)} TICKET REMAINING`
+                                    : `TICKET REMAINING`}
+                            </Text>
                         </View>
                         <View style={styles.divider} />
 
@@ -430,7 +425,7 @@ const styles = StyleSheet.create({
     card: { borderRadius: 8, padding: 16, elevation: 3 },
     infoRow: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        // justifyContent: 'space-between',
         alignItems: 'center',
         marginBottom: 12,
     },

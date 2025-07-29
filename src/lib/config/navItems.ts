@@ -27,11 +27,11 @@ const navItems = {
             path: 'CreateEvent',
             icon: '/svg/create-event.svg'
         },
-        // {
-        //     label: 'Logout',
-        //     path: 'Login',
-        //     icon: '/svg/bulk-add.svg'
-        // }
+        {
+            label: 'Logout',
+            path: 'Login',
+            icon: '/svg/bulk-add.svg'
+        }
 
     ],
     user: [

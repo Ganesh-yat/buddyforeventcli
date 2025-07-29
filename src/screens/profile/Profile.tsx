@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { Colors } from '../../constants/Colors';
 import { useGlobalInfo } from '../../context/GlobalContext';
-import { API_ROUTE } from '../../lib/config';
+import { API_ROUTE } from '../../../config';
 import { useNavigation } from "@react-navigation/native";
 
 export default function Profile() {
-    const { user, token, changeUser, changeUserId, changeUserType, theme } = useGlobalInfo();
+    const { user, changeUser, changeUserId, changeUserType, theme } = useGlobalInfo();
     const colors = Colors[theme];
     const navigation = useNavigation();
 
@@ -23,12 +23,12 @@ export default function Profile() {
     useEffect(() => {
         if (user) {
             setFormData({
-                name: user.name || '',
-                email: user.email || '',
+                name: user?.existingUser?.name || '',
+                email: user?.existingUser?.email || '',
                 password: '',
-                phone_number: user.phone_number?.toString() || '',
-                company_name: user.company_name || '',
-                company_gst_number: user.company_gst_number || '',
+                phone_number: user?.existingUser?.phone_number?.toString() || '',
+                company_name: user?.existingUser?.company_name || '',
+                company_gst_number: user?.existingUser?.company_gst_number || '',
             });
         }
     }, [user]);
@@ -56,12 +56,13 @@ export default function Profile() {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${user?.token}`,
                 },
                 body: JSON.stringify(payload),
             });
             const result = await res.json();
             if (result.success) {
+                console.log("result - ", result.data)
                 changeUser?.(result.data);
                 changeUserId?.(result.data._id);
                 changeUserType?.(result.data.user_type);

@@ -1,27 +1,9 @@
-// import React from "react";
-// import { View, Text, StyleSheet } from "react-native";
-
-// export default function Feedback() {
-//     return (
-//         <View style={styles.container}>
-//             <Text>Feedback</Text>
-//         </View>
-//     );
-// }
-
-// const styles = StyleSheet.create({
-//     container: {
-//         flex: 1,
-//         alignItems: "center",
-//         justifyContent: "center",
-//     },
-// });
-
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Colors } from '../../../constants/Colors';
 import { useGlobalInfo } from '../../../context/GlobalContext';
 import { API_ROUTE } from '../../../../config';
+import { formatDate } from '../../../lib/utils/formatter';
 
 const ROWS_PER_PAGE_OPTIONS = [5, 10, 25];
 
@@ -222,16 +204,16 @@ export default function FeedbackAdmin() {
 }
 
 // Helper for date formatting (yyyy-MM-dd HH:mm)
-function formatDate(dateStr) {
-    if (!dateStr) return '';
-    const d = new Date(dateStr);
-    const yyyy = d.getFullYear();
-    const mm = String(d.getMonth() + 1).padStart(2, '0');
-    const dd = String(d.getDate()).padStart(2, '0');
-    const hh = String(d.getHours()).padStart(2, '0');
-    const min = String(d.getMinutes()).padStart(2, '0');
-    return `${yyyy}-${mm}-${dd} ${hh}:${min}`;
-}
+// function formatDate(dateStr) {
+//     if (!dateStr) return '';
+//     const d = new Date(dateStr);
+//     const yyyy = d.getFullYear();
+//     const mm = String(d.getMonth() + 1).padStart(2, '0');
+//     const dd = String(d.getDate()).padStart(2, '0');
+//     const hh = String(d.getHours()).padStart(2, '0');
+//     const min = String(d.getMinutes()).padStart(2, '0');
+//     return `${yyyy}-${mm}-${dd} ${hh}:${min}`;
+// }
 
 const styles = StyleSheet.create({
     root: {

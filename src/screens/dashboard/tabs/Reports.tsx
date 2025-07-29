@@ -150,10 +150,10 @@ export default function Reports() {
 
         Promise.all([sumP, subsP, ticketsP])
             .then(([sum, subs, tickets]) => {
-                // setSummary(sum);
-                // setSubmissions(subs);
-                setSummary(summaryData);
-                setSubmissions(submissionsData);
+                setSummary(sum);
+                setSubmissions(subs);
+                // setSummary(summaryData);
+                // setSubmissions(submissionsData);
                 const m = {};
                 tickets.forEach(t => {
                     m[t.userSubmissionId] = t.tierName.toUpperCase();

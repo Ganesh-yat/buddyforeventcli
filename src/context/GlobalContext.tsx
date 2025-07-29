@@ -7,6 +7,7 @@ type ThemeType = keyof typeof Colors;
 type GlobalContextType = {
     // Auth/user state
     isLoggedIn: boolean;
+    user: string | null;
     userId: string | null;
     userType: string | null;
     // Theme
@@ -15,6 +16,7 @@ type GlobalContextType = {
     event: string | null,
     // State setters
     changeIsLoggedIn: (v: boolean) => void;
+    changeUser: (id: string | null) => void;
     changeUserId: (id: string | null) => void;
     changeUserType: (type: string | null) => void;
     changeTheme: (theme: ThemeType) => void;
@@ -28,11 +30,13 @@ const defaultContext: GlobalContextType = {
     theme: "light",
     colors: Colors.light,
     event: "",
+    user: "",
     changeIsLoggedIn: () => { },
     changeUserId: () => { },
     changeUserType: () => { },
     changeTheme: () => { },
     changeEvent: () => { },
+    changeUser: () => { },
 };
 
 const GlobalContext = createContext<GlobalContextType>(defaultContext);
@@ -51,6 +55,7 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
     const [userId, setUserId] = useState<string | null>(null);
     const [userType, setUserType] = useState<string | null>(null);
     const [event, setEvent] = useState<string | null>("");
+    const [user, setUser] = useState<string | null>("");
 
     // Setters
     const changeIsLoggedIn = (v: boolean) => setIsLoggedIn(v);
@@ -58,6 +63,7 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
     const changeUserType = (type: string | null) => setUserType(type);
     const changeTheme = (newTheme: ThemeType) => setTheme(newTheme);
     const changeEvent = (newEventId: string) => setEvent(newEventId)
+    const changeUser = (newUserData: string) => setUser(newUserData)
 
     const colors = Colors[theme];
 
@@ -65,12 +71,14 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
         <GlobalContext.Provider
             value={{
                 isLoggedIn,
+                user,
                 userId,
                 userType,
                 theme,
                 colors,
                 event,
                 changeIsLoggedIn,
+                changeUser,
                 changeUserId,
                 changeUserType,
                 changeTheme,
