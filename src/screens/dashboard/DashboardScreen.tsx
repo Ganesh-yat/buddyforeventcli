@@ -81,7 +81,6 @@ export default function DashboardScreen({ route, navigation }: Props) {
                 })}
             </ScrollView>
 
-            {/* Tab Content Area (fills rest of screen, scrollable if needed) */}
             <View style={{}}>
                 <ScrollView
                     contentContainerStyle={{ flexGrow: 1, backgroundColor: colors.background }}

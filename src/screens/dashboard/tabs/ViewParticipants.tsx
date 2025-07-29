@@ -1,24 +1,3 @@
-// import React from "react";
-// import { View, Text, StyleSheet } from "react-native";
-
-// export default function ViewParticipants() {
-//     return (
-//         <View style={styles.container}>
-//             <Text>ViewParticipants</Text>
-//         </View>
-//     );
-// }
-
-// const styles = StyleSheet.create({
-//     container: {
-//         flex: 1,
-//         alignItems: "center",
-//         justifyContent: "center",
-//     },
-// });
-
-
-
 import React, { useEffect, useState } from 'react';
 import {
     ActivityIndicator,
@@ -32,6 +11,7 @@ import {
 import { Colors } from '../../../constants/Colors';
 import { useGlobalInfo } from '../../../context/GlobalContext';
 import { API_ROUTE } from '../../../../config';
+import { Dimensions } from "react-native";
 
 export default function Participants() {
     const { event: eventId, theme } = useGlobalInfo();
@@ -48,6 +28,7 @@ export default function Participants() {
     const [loading, setLoading] = useState(false);
 
     const [filter, setFilter] = useState('All');
+    const { height } = Dimensions.get('window');
 
     useEffect(() => {
         if (!eventId) {
@@ -130,7 +111,7 @@ export default function Participants() {
             ) : (
                 <>
                     <Text style={[styles.subtitle, { color: colors.secondaryText }]}>Event Participant live data</Text>
-                    <Text style={[styles.title, { color: colors.button }]}>Participant Overview</Text>
+                    {/* <Text style={[styles.title, { color: colors.button }]}>Participant Overview</Text> */}
                     {/* Search */}
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12 }}>
                         <TextInput
@@ -181,24 +162,24 @@ export default function Participants() {
                     </View>
 
                     {/* Table header */}
-                    <View style={{ height: 560 }}>
-                        <ScrollView>
-                            <View style={[
-                                styles.tableHeader,
-                                { backgroundColor: colors.dropdownBackground, borderColor: colors.secondaryText }
-                            ]}>
-                                {schema.fields.map(f => (
-                                    <Text key={f.id} style={[styles.tableCellHeader, { color: colors.text }]}>
-                                        {f.label}
-                                    </Text>
-                                ))}
-                                <Text style={[styles.tableCellHeader, { color: colors.text }]}>Visitors</Text>
-                                <Text style={[styles.tableCellHeader, { color: colors.text }]}>Entry Time</Text>
-                                <Text style={[styles.tableCellHeader, { color: colors.text }]}>Exit Time</Text>
-                                <Text style={[styles.tableCellHeader, { color: colors.text }]}>Gift</Text>
-                                <Text style={[styles.tableCellHeader, { color: colors.text }]}>Food</Text>
-                            </View>
+                    <View style={{}}>
 
+                        <View style={[
+                            styles.tableHeader,
+                            { backgroundColor: colors.dropdownBackground, borderColor: colors.secondaryText }
+                        ]}>
+                            {schema.fields.map(f => (
+                                <Text key={f.id} style={[styles.tableCellHeader, { color: colors.text }]}>
+                                    {f.label}
+                                </Text>
+                            ))}
+                            <Text style={[styles.tableCellHeader, { color: colors.text }]}>Visitors</Text>
+                            <Text style={[styles.tableCellHeader, { color: colors.text }]}>Entry Time</Text>
+                            <Text style={[styles.tableCellHeader, { color: colors.text }]}>Exit Time</Text>
+                            <Text style={[styles.tableCellHeader, { color: colors.text }]}>Gift</Text>
+                            <Text style={[styles.tableCellHeader, { color: colors.text }]}>Food</Text>
+                        </View>
+                        <ScrollView style={{ maxHeight: height * 0.5 }}>
                             {loading ? (
                                 <View style={{ padding: 32, alignItems: 'center' }}>
                                     <ActivityIndicator color={colors.button} />
@@ -267,45 +248,45 @@ export default function Participants() {
                                 ))
                             )}
 
-                            {/* Pagination */}
-                            <View style={styles.pagination}>
-                                <TouchableOpacity
-                                    disabled={page === 1}
-                                    onPress={() => setPage(prev => Math.max(prev - 1, 1))}
-                                >
-                                    <Text style={[styles.pageBtn, { color: colors.button, opacity: page === 1 ? 0.5 : 1 }]}>Prev</Text>
-                                </TouchableOpacity>
-                                <Text style={[styles.pageLabel, { color: colors.text }]}>Page {page} of {totalPages}</Text>
-                                <TouchableOpacity
-                                    disabled={page >= totalPages}
-                                    onPress={() => setPage(prev => Math.min(prev + 1, totalPages))}
-                                >
-                                    <Text
-                                        style={[
-                                            styles.pageBtn,
-                                            {
-                                                color: colors.button,
-                                                opacity: page >= totalPages ? 0.5 : 1,
-                                            },
-                                        ]}
-                                    >
-                                        Next
-                                    </Text>
-                                </TouchableOpacity>
-                                <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 10 }}>
-                                    <Text style={{ color: colors.secondaryText }}>Rows:</Text>
-                                    {[10, 25, 50].map(n => (
-                                        <TouchableOpacity key={n} onPress={() => { setRowsPerPage(n); setPage(1); }}>
-                                            <Text style={[
-                                                { marginHorizontal: 4, color: n === rowsPerPage ? colors.button : colors.text }
-                                            ]}>
-                                                {n}
-                                            </Text>
-                                        </TouchableOpacity>
-                                    ))}
-                                </View>
-                            </View>
                         </ScrollView>
+                        {/* Pagination */}
+                        <View style={styles.pagination}>
+                            <TouchableOpacity
+                                disabled={page === 1}
+                                onPress={() => setPage(prev => Math.max(prev - 1, 1))}
+                            >
+                                <Text style={[styles.pageBtn, { color: colors.button, opacity: page === 1 ? 0.5 : 1 }]}>Prev</Text>
+                            </TouchableOpacity>
+                            <Text style={[styles.pageLabel, { color: colors.text }]}>Page {page} of {totalPages}</Text>
+                            <TouchableOpacity
+                                disabled={page >= totalPages}
+                                onPress={() => setPage(prev => Math.min(prev + 1, totalPages))}
+                            >
+                                <Text
+                                    style={[
+                                        styles.pageBtn,
+                                        {
+                                            color: colors.button,
+                                            opacity: page >= totalPages ? 0.5 : 1,
+                                        },
+                                    ]}
+                                >
+                                    Next
+                                </Text>
+                            </TouchableOpacity>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 10 }}>
+                                <Text style={{ color: colors.secondaryText }}>Rows:</Text>
+                                {[10, 25, 50].map(n => (
+                                    <TouchableOpacity key={n} onPress={() => { setRowsPerPage(n); setPage(1); }}>
+                                        <Text style={[
+                                            { marginHorizontal: 4, color: n === rowsPerPage ? colors.button : colors.text }
+                                        ]}>
+                                            {n}
+                                        </Text>
+                                    </TouchableOpacity>
+                                ))}
+                            </View>
+                        </View>
                     </View>
                 </>
             )}
@@ -315,10 +296,11 @@ export default function Participants() {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        // flex: 1,
         padding: 16,
     },
     subtitle: {
+        paddingVertical: 12,
         marginBottom: 4,
     },
     title: {

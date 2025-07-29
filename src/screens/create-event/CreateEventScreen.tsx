@@ -1,25 +1,3 @@
-// import React from "react";
-// import { View, Text, StyleSheet } from "react-native";
-
-// export default function CreateEventScreen() {
-//     return (
-//         <View style={styles.container}>
-//             <Text>CreateEventScreen</Text>
-//         </View>
-//     );
-// }
-
-// const styles = StyleSheet.create({
-//     container: {
-//         flex: 1,
-//         alignItems: "center",
-//         justifyContent: "center",
-//     },
-// });
-
-// npm install react-native-image-picker @react-native-community/datetimepicker @react-navigation/native
-
-// @ts-ignore
 import React, { useEffect, useState } from "react";
 import {
     Image,
@@ -42,7 +20,8 @@ import { uploadToCloudinary } from "../../lib/utils/cloudinary";
 import { formatDate, formatTime } from "../../lib/utils/formatter";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { MainAppStackParamList } from "../../navigation/MainAppNavigator";
-// --- Helper functions, similar as before ---
+
+// --- Helper functions, there in the formatter.ts---
 // function formatDate(input) {
 //     if (!input) return "";
 //     const date = typeof input === "string" ? new Date(input) : input;
@@ -88,8 +67,9 @@ export default function CreateEvent({ route }: Props) {
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
     const [originalEventData, setOriginalEventData] = useState(null);
+    const isEditTitle = !!event;
+    const screenTitle = isEditTitle ? "Update Event" : "Create Event";
 
-    // --- Fetch event if editing ---
     useEffect(() => {
         const fetchEvent = async () => {
             if (event) {
@@ -151,7 +131,7 @@ export default function CreateEvent({ route }: Props) {
         fetchEvent();
     }, []);
 
-    // --- Validation ---
+    // --- Validation of the input fields  ---
     const validateField = (name, value) => {
         let err = "";
         switch (name) {
@@ -210,7 +190,7 @@ export default function CreateEvent({ route }: Props) {
         }));
     };
 
-    // --- Image picker replacement ---
+    // --- Image picker and replacement ---
     const handleImagePick = async (key, multiple = false) => {
         launchImageLibrary(
             {
@@ -268,8 +248,9 @@ export default function CreateEvent({ route }: Props) {
         }));
     };
 
-    // --- Submission logic, same as before ---
+    // --- Submission logic ---
     const handleCreateEvent = async (payload, isEdit = false, eventId = null) => {
+        console.log(payload, isEdit, eventId, userId, "event")
         const url = isEdit && eventId
             ? `${API_ROUTE}/api/v1/event/${userId}/${eventId}`
             : `${API_ROUTE}/api/v1/event`;
@@ -286,18 +267,53 @@ export default function CreateEvent({ route }: Props) {
 
     const buildPatchPayload = () => {
         if (!originalEventData) return formData;
+
         const patch = {};
-        Object.keys(formData).forEach(key => {
-            if (JSON.stringify(formData[key]) !== JSON.stringify(originalEventData[key])) {
+
+        Object.keys(formData).forEach((key) => {
+            if (key === "cover_image" || key === "logo_image") {
+                const oldUrl = originalEventData[key]?.url || originalEventData[key]?.uri || "";
+                const newUrl = formData[key]?.url || formData[key]?.uri || "";
+                if (oldUrl !== newUrl) patch[key] = formData[key];
+                return;
+            }
+
+            if (key === "event_images") {
+                const oldArr = (originalEventData[key] || []).map(img => img?.url || img?.uri).sort();
+                const newArr = (formData[key] || []).map(img => img?.url || img?.uri).sort();
+                if (JSON.stringify(oldArr) !== JSON.stringify(newArr)) {
+                    patch[key] = formData[key];
+                }
+                return;
+            }
+
+            if (key === "start_date" || key === "end_date") {
+                const oldDate = originalEventData[key] ? formatDate(originalEventData[key]) : "";
+                const newDate = formData[key] ? formatDate(formData[key]) : "";
+                if (oldDate !== newDate) patch[key] = formData[key];
+                return;
+            }
+
+            if (key === "start_time" || key === "end_time") {
+                const oldTime = originalEventData[key] ? formatTime(originalEventData[key]) : "";
+                const newTime = formData[key] ? formatTime(formData[key]) : "";
+                if (oldTime !== newTime) patch[key] = formData[key];
+                return;
+            }
+
+            if (formData[key] !== originalEventData[key]) {
                 patch[key] = formData[key];
             }
         });
+
         if (patch.start_date) patch.start_date = formatDate(formData.start_date);
         if (patch.end_date) patch.end_date = formatDate(formData.end_date);
         if (patch.start_time) patch.start_time = formatTime(formData.start_time);
         if (patch.end_time) patch.end_time = formatTime(formData.end_time);
+        console.log("patch", patch);
         return patch;
     };
+
 
     const handleSubmit = async () => {
         const mandatoryFields = [
@@ -361,6 +377,7 @@ export default function CreateEvent({ route }: Props) {
                 delete payload._id;
                 delete payload.id;
             }
+            console.log("form data ", payload);
             const response = await handleCreateEvent(payload, isEdit, eventId);
             if (response.success) {
                 setSnackbar({ visible: true, message: "Event created successfully!", color: "green" });
@@ -391,9 +408,27 @@ export default function CreateEvent({ route }: Props) {
             style={[styles.container, { backgroundColor: colors.background }]}
             contentContainerStyle={{ paddingBottom: 32 }}
         >
-            <Text style={[styles.heading, { color: colors.button }]}>Create Event</Text>
+            <View style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+            }}>
+                <TouchableOpacity
+                    onPress={() => navigation.goBack()}
+                    activeOpacity={0.7}
+                    style={{ paddingBottom: 20, minWidth: 40, alignItems: 'center' }}
+                >
+                    <Text style={{ color: colors.button, fontSize: 26 ,lineHeight:32}}>←</Text>
+                </TouchableOpacity>
+                <View style={{ flex: 1, alignItems: "center" }}>
+                    <Text style={[styles.heading, { color: colors.button, textAlign: "center" }]}>
+                        {screenTitle}
+                    </Text>
+                </View>
+                <View style={{ minWidth: 40 }} />
+            </View>
 
-            {/* All Inputs & UI are the same as your original, but without Expo or Paper */}
+
             <TextInput
                 style={[styles.input, { color: colors.text, backgroundColor: colors.card, borderColor: colors.secondaryText }]}
                 placeholder="Event Name *"

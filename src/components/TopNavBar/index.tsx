@@ -1,65 +1,3 @@
-// import React from "react";
-// import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-// import { useNavigation } from "@react-navigation/native";
-// import { useGlobalInfo } from "../../context/GlobalContext"; 
-
-// const TopNavBar: React.FC = () => {
-//     const navigation = useNavigation();
-//     const { theme, colors, changeTheme } = useGlobalInfo();
-
-//     return (
-//         <SafeAreaView style={{ backgroundColor: colors.background }}>
-//             <View style={[styles.container, { borderBottomColor: colors.secondaryText }]}>
-//                 <TouchableOpacity onPress={() => navigation.navigate("Dashboard" as never)}>
-//                     <Text style={[styles.title, { color: colors.text }]}>
-//                         Buddy For Events
-//                     </Text>
-//                 </TouchableOpacity>
-//                 <View style={styles.actions}>
-//                     <TouchableOpacity onPress={() => changeTheme(theme === "light" ? "dark" : "light")}>
-//                         <Text>{theme === "light" ? "🌙" : "☀️"}</Text>
-//                     </TouchableOpacity>
-//                     <TouchableOpacity onPress={() => { /* notification logic here */ }}>
-//                         <Text style={[styles.actionIcon, { color: colors.text }]}>🔔</Text>
-//                     </TouchableOpacity>
-//                     <TouchableOpacity onPress={() => navigation.navigate("Profile" as never)}>
-//                         <Text style={[styles.actionIcon, { color: colors.text }]}>👤</Text>
-//                     </TouchableOpacity>
-//                 </View>
-//             </View>
-//         </SafeAreaView>
-//     );
-// };
-
-// const styles = StyleSheet.create({
-//     container: {
-//         height: 70,
-//         flexDirection: "row",
-//         alignItems: "center",
-//         paddingHorizontal: 16,
-//         justifyContent: "space-between",
-//         borderBottomWidth: 1,
-//     },
-//     title: {
-//         textAlign: "center",
-//         fontSize: 18,
-//         fontWeight: "600",
-//     },
-//     actions: {
-//         flexDirection: "row",
-//         gap: 6,
-//         alignItems: "center",
-//     },
-//     actionIcon: {
-//         fontSize: 22,
-//         marginLeft: 16,
-//     },
-// });
-
-// export default TopNavBar;
-
-
-
 import React, { useState } from "react";
 import {
     Image,
@@ -78,7 +16,7 @@ const TopNavBar: React.FC = () => {
     const navigation = useNavigation<any>();
     const [menuVisible, setMenuVisible] = useState(false);
 
-    const { userType, theme, changeTheme, colors, changeEvent } = useGlobalInfo();
+    const { userType, theme, changeTheme, colors, changeEvent, changeIsLoggedIn } = useGlobalInfo();
     const items = navItems[userType] || [];
 
     return (
@@ -130,8 +68,13 @@ const TopNavBar: React.FC = () => {
                                 style={styles.menuItem}
                                 onPress={() => {
                                     setMenuVisible(false);
-                                    changeEvent(null);
-                                    navigation.navigate(item.path);
+                                    if (item.path === "Login") {
+                                        changeIsLoggedIn(false);
+                                        return
+                                    } else {
+                                        changeEvent(null);
+                                        navigation.navigate(item.path);
+                                    }
                                 }}
                             >
                                 <Image

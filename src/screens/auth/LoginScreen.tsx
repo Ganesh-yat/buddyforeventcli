@@ -14,8 +14,8 @@ import {
 import { API_ROUTE } from "../../../config";
 import { useGlobalInfo } from "../../context/GlobalContext";
 
-const LoginScreen: React.FC = ({ handleLoginScreen }: any) => {
-    const { colors, changeIsLoggedIn, changeUserType, changeUserId } = useGlobalInfo();
+const LoginScreen: React.FC = () => {
+    const { colors, changeIsLoggedIn, changeUser, changeUserType, changeUserId } = useGlobalInfo();
     const navigation = useNavigation();
 
     const [email, setEmail] = useState("");
@@ -80,15 +80,15 @@ const LoginScreen: React.FC = ({ handleLoginScreen }: any) => {
             const data = await response.json();
             if (response.ok) {
                 const userTypeFromApi = data?.data?.existingUser?.user_type;
-                
+
                 if (userTypeFromApi) {
-                    console.log(data,"login-api-resp");
-                    
+                    console.log(data, "login-api-resp");
+
                     changeUserType(userTypeFromApi);
                     changeIsLoggedIn(true);
                     changeUserId(data?.data?.existingUser?._id);
-                    handleLoginScreen(false);
-
+                    changeUser(data?.data)
+                    console.log("userData", data?.data)
                     // navigation.navigate('Dashboard' as never); // Use 'replace' or 'navigate' as per your flow
                 } else {
                     showTopSnackbar("User type not found. Cannot continue.");
